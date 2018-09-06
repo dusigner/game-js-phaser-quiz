@@ -5,6 +5,11 @@ var score = 0;
 //Total de Perguntas
 var numberOfQuestions = 3
 
+var whatStage = localStorage.getItem('myStage' , "Intro");
+var whatAnswers = localStorage.getItem('myAnswers', 0);
+
+
+
 //
 // Tela de titulo
 //
@@ -37,7 +42,7 @@ Intro.create = function()
 
     // cria botao JOGAR
     var playButton = this.add.sprite(400, 500, 'nextButton');
-    
+
     //playButton.setOrigin(0.5);
     var playLabel = this.add.text(400, 500, 'Jogar', {
         cursor: 'pointer',
@@ -51,7 +56,7 @@ Intro.create = function()
     playButton.setInteractive({useHandCursor: true}).on('pointerdown', () => {
         this.sound.play('click');
         this.scene.start('Question1');
-        
+
     });
 }
 
@@ -67,6 +72,16 @@ Intro.update = function(time, delta)
 /////////////////////////////////////////////
 // QUESTION 1 - Tela de perguntas e respostas
 /////////////////////////////////////////////
+
+/* loop
+var i;
+var questions = 3;
+
+for (i = 0; i < questions; i++) {
+    console.log("oi");
+}
+*/
+
 var Question1 = new Phaser.Scene('Question1');
 Question1.savedOption = 0;
 Question1.savedAnswer;
@@ -79,17 +94,22 @@ Question1.preload = function()
     this.load.image('selectedOption', 'assets/option_green.png');
     this.load.audio('right', 'assets/right.ogg');
     this.load.audio('wrong', 'assets/wrong.ogg');
+    this.load.json('questoes', 'data/questions.json');
+
 }
 
 Question1.create = function()
 {
+    //Json
+    var questionJSON = this.cache.json.get('questoes')
+
     // variaveis
     var selectionOption = 0; // opcao selecionada: 0 (nenhuma), 1, 2 ou 3
-    var rightOption = 2; // resposta corretaa
+    var rightOption = questionJSON.questoes[0].resposta; // resposta corretaa
     var textConfig = { fontFamily: 'sans-serif', fontSize: '24px', color: '#000', wordWrap: { width: 600 } };
 
     // cria pergunta
-    var question = this.add.text(150, 150, 'Quanto é 5 + 5?', textConfig);
+    var question = this.add.text(150, 150, questionJSON.questoes[0].titulo , textConfig);
 
     // cria feedBeck
     var feedBeck = this.add.text(400, 100, '', textConfig);
@@ -119,9 +139,9 @@ Question1.create = function()
     });
 
     // cria respostas
-    var answer1 = this.add.text(200, 250, 'O valor é 6', textConfig);
-    var answer2 = this.add.text(200, 300, 'O valor é 10', textConfig);
-    var answer3 = this.add.text(200, 350, 'O valor é 20', textConfig);
+    var answer1 = this.add.text(200, 250, questionJSON.questoes[0].escolhas[0], textConfig);
+    var answer2 = this.add.text(200, 300, questionJSON.questoes[0].escolhas[1], textConfig);
+    var answer3 = this.add.text(200, 350, questionJSON.questoes[0].escolhas[2], textConfig);
 
     // botao AVANCAR
     var nextButton = this.add.sprite(600, 500, 'nextButton');
@@ -135,7 +155,7 @@ Question1.create = function()
 
     // fazer verificacao no botao AVANCAR
     nextButton.setInteractive({useHandCursor: true}).on('pointerdown', () => {
-        
+
         if(selectionOption != 0) {
             // opcao correta?
             if(selectionOption == rightOption) {
@@ -157,8 +177,12 @@ Question1.create = function()
             this.sys.input.disable(button2);
             this.sys.input.disable(button3);
 
-            // registra a pergunta
+            // registra a resposta
             this.savedAnswer = selectionOption;
+
+            // registra tela e pergunta respondida
+            localStorage.setItem('myStage', "Question1");
+            localStorage.setItem('myAnswers', selectionOption);
 
             // vai p/ proxima tela
             setTimeout(() => {
@@ -186,7 +210,7 @@ Question1.create = function()
         if(Question1.savedAnswer == 3)
             buttonX.y = button3.y;
     }
-    
+
     // faz interacao do botao VOLTAR
     prevButton.setInteractive({useHandCursor: true}).on('pointerdown', () => {
         this.scene.start('Intro');
@@ -198,9 +222,9 @@ Question1.update = function(time, delta)
 
 }
 
-//
+/////////////////////////////////////////////
 // QUESTION 2 - Tela de perguntas e respostas
-//
+/////////////////////////////////////////////
 var Question2 = new Phaser.Scene('Question2');
 Question2.savedOption = 0;
 Question2.savedAnswer;
@@ -217,13 +241,17 @@ Question2.preload = function()
 
 Question2.create = function()
 {
+
+    //Json
+    var questionJSON = this.cache.json.get('questoes')
+
     // variaveis
     var selectionOption = 0; // opcao selecionada: 0 (nenhuma), 1, 2 ou 3
-    var rightOption = 3; // resposta corretaa
+    var rightOption = questionJSON.questoes[1].resposta; // resposta corretaa
     var textConfig = { fontFamily: 'sans-serif', fontSize: '24px', color: '#000', wordWrap: { width: 600 } };
 
     // cria pergunta
-    var question = this.add.text(150, 150, 'Quanto é 10 + 10?', textConfig);
+    var question = this.add.text(150, 150, questionJSON.questoes[1].titulo , textConfig);
 
     // cria feedBeck
     var feedBeck = this.add.text(400, 100, '', textConfig);
@@ -253,9 +281,9 @@ Question2.create = function()
     });
 
     // cria respostas
-    var answer1 = this.add.text(200, 250, 'O valor é 6', textConfig);
-    var answer2 = this.add.text(200, 300, 'O valor é 10', textConfig);
-    var answer3 = this.add.text(200, 350, 'O valor é 20', textConfig);
+    var answer1 = this.add.text(200, 250, questionJSON.questoes[1].escolhas[0], textConfig);
+    var answer2 = this.add.text(200, 300, questionJSON.questoes[1].escolhas[1], textConfig);
+    var answer3 = this.add.text(200, 350, questionJSON.questoes[1].escolhas[2], textConfig);
 
     // botao AVANCAR
     var nextButton = this.add.sprite(600, 500, 'nextButton');
@@ -269,7 +297,7 @@ Question2.create = function()
 
     // fazer verificacao no botao AVANCAR
     nextButton.setInteractive({useHandCursor: true}).on('pointerdown', () => {
-        
+
         if(selectionOption != 0) {
             // opcao correta?
             if(selectionOption == rightOption) {
@@ -293,6 +321,10 @@ Question2.create = function()
 
             // registra a pergunta
             this.savedAnswer = selectionOption;
+
+            // registra tela e pergunta respondida
+            localStorage.setItem('myStage', "Question2");
+            localStorage.setItem('myAnswers', selectionOption);
 
             // vai p/ proxima tela
             setTimeout(() => {
@@ -320,7 +352,7 @@ Question2.create = function()
         if(Question2.savedAnswer == 3)
             buttonX.y = button3.y;
     }
-    
+
     // faz interacao do botao VOLTAR
     prevButton.setInteractive({useHandCursor: true}).on('pointerdown', () => {
         this.scene.start('Question1');
@@ -332,9 +364,9 @@ Question2.update = function(time, delta)
 
 }
 
-//
+/////////////////////////////////////////////
 // QUESTION 3 - Tela de perguntas e respostas
-//
+/////////////////////////////////////////////
 var Question3 = new Phaser.Scene('Question3');
 Question3.savedOption = 0;
 Question3.savedAnswer;
@@ -351,13 +383,16 @@ Question3.preload = function()
 
 Question3.create = function()
 {
+    //Json
+    var questionJSON = this.cache.json.get('questoes')
+
     // variaveis
     var selectionOption = 0; // opcao selecionada: 0 (nenhuma), 1, 2 ou 3
-    var rightOption = 1; // resposta corretaa
+    var rightOption = questionJSON.questoes[2].resposta; // resposta corretaa
     var textConfig = { fontFamily: 'sans-serif', fontSize: '24px', color: '#000', wordWrap: { width: 600 } };
 
     // cria pergunta
-    var question = this.add.text(150, 150, 'Quanto é 3 + 3?', textConfig);
+    var question = this.add.text(150, 150, questionJSON.questoes[2].titulo , textConfig);
 
     // cria feedBeck
     var feedBeck = this.add.text(400, 100, '', textConfig);
@@ -387,9 +422,9 @@ Question3.create = function()
     });
 
     // cria respostas
-    var answer1 = this.add.text(200, 250, 'O valor é 6', textConfig);
-    var answer2 = this.add.text(200, 300, 'O valor é 10', textConfig);
-    var answer3 = this.add.text(200, 350, 'O valor é 20', textConfig);
+    var answer1 = this.add.text(200, 250, questionJSON.questoes[2].escolhas[0], textConfig);
+    var answer2 = this.add.text(200, 300, questionJSON.questoes[2].escolhas[1], textConfig);
+    var answer3 = this.add.text(200, 350, questionJSON.questoes[2].escolhas[2], textConfig);
 
     // botao AVANCAR
     var nextButton = this.add.sprite(600, 500, 'nextButton');
@@ -403,7 +438,7 @@ Question3.create = function()
 
     // fazer verificacao no botao AVANCAR
     nextButton.setInteractive({useHandCursor: true}).on('pointerdown', () => {
-        
+
         if(selectionOption != 0) {
             // opcao correta?
             if(selectionOption == rightOption) {
@@ -427,6 +462,10 @@ Question3.create = function()
 
             // registra a pergunta
             this.savedAnswer = selectionOption;
+
+            // registra tela e pergunta respondida
+            localStorage.setItem('myStage', "Question3");
+            localStorage.setItem('myAnswers', selectionOption);
 
             // vai p/ proxima tela
             setTimeout(() => {
@@ -454,7 +493,7 @@ Question3.create = function()
         if(Question3.savedAnswer == 3)
             buttonX.y = button3.y;
     }
-    
+
     // faz interacao do botao VOLTAR
     prevButton.setInteractive({useHandCursor: true}).on('pointerdown', () => {
         this.scene.start('Question2');
@@ -465,6 +504,7 @@ Question3.update = function(time, delta)
 {
 
 }
+
 
 //
 // Tela de pontuacao
@@ -507,12 +547,14 @@ Final.create = function()
     });
     restartLabel.setOrigin(0.5, 0.5);
 
+    // registra tela e pergunta respondida
+    localStorage.setItem('myStage', "Final");
+
+
     // faz botao REINICIAR ficar interativo
     restartButton.setInteractive({useHandCursor: true}).on('pointerdown', () => {
         this.scene.start('Intro');
     });
-
-   
 }
 
 Final.update = function(time, delta)
