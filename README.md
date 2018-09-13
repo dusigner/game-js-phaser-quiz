@@ -4,4 +4,4 @@ Quiz desenvolvido como forma de estudo da linguagem JavaScript, utilizando o gam
 
 # Run
 
-Para rodar, é necessário startar um servidor local [a link](http://phaser.io/tutorials/getting-started-phaser3/part2)
+Para rodar, é necessário startar um servidor local [Leia a documentação oficial](http://phaser.io/tutorials/getting-started-phaser3/part2)
