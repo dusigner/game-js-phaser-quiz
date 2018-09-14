@@ -39,6 +39,21 @@ function loadGameState()
         // console.log("aqui")
     }
 }
+function resize()
+{
+    var canvas = game.canvas, width = window.innerWidth, height = window.innerHeight;
+    var wratio = width / height, ratio = canvas.width / canvas.height;
+
+    if (wratio < ratio)
+    {
+        canvas.style.width = width + "px";
+        canvas.style.height = (width / ratio) + "px";
+    } else
+    {
+        canvas.style.width = (height * ratio) + "px";
+        canvas.style.height = height + "px";
+    }
+}
 
 ////////////////////////////////////
 // Tela de perguntas e respostas
@@ -234,6 +249,8 @@ Intro.preload = function()
 
 Intro.create = function()
 {
+    window.addEventListener('resize', resize);
+    resize();
     // cria titulo
     var title = this.add.text(400, 100, 'Jogo de Quiz', {
         fontFamily: 'sans-serif',
@@ -365,6 +382,28 @@ var config = {
     width: 800,
     height: 600,
     backgroundColor: '#f4f4f4',
+    plugins: {
+      global: [{ key: 'GameScalePlugin', plugin: Phaser.Plugins.GameScalePlugin, mapping: 'gameScale' }]
+    },
     scene: [ Intro, Question, Final ]
 };
 var game = new Phaser.Game(config);
+
+
+function create () {
+    window.addEventListener('resize', resize);
+    resize();
+}
+
+function resize() {
+    var canvas = game.canvas, width = window.innerWidth, height = window.innerHeight;
+    var wratio = width / height, ratio = canvas.width / canvas.height;
+
+    if (wratio < ratio) {
+        canvas.style.width = width + "px";
+        canvas.style.height = (width / ratio) + "px";
+    } else {
+        canvas.style.width = (height * ratio) + "px";
+        canvas.style.height = height + "px";
+    }
+}
